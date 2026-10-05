@@ -1,136 +1,109 @@
-# RVC (基于检索的语音转换) Colab 项目
+<div align="center">
 
-本项目提供了一个 Google Colab 笔记本，用于体验 RVC (Retrieval-based Voice Conversion / 基于检索的语音转换) 技术。它使得用户无需本地高性能 GPU 配置即可轻松训练自己的声音模型并进行语音转换。
+# RVC for Colab
 
-**此 Colab 笔记本特别针对 Google Colab 最新的 Python 3.11 环境进行了全面适配，并修复了原始 RVC 项目中的一些已知 bug，旨在提供更流畅稳定的用户体验。**
+**English** | [简体中文](./README.zh-CN.md)
 
-**核心原始项目链接:** [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
-**Colab 笔记本直达链接 :**
-[![在 Colab 中打开](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&color=525252)](https://colab.research.google.com/github/yushentang/RVC-Retrieval-based-Voice-Conversion-Colab/blob/main/RVC_For_Colab.ipynb)
+Train your own voice model and convert voices with RVC (Retrieval-based Voice Conversion) on Google Colab, no local GPU needed.
 
-## 目录
-1.  [项目概览](#项目概览)
-2.  [主要功能](#主要功能)
-3.  [环境要求](#环境要求)
-4.  [使用方法](#使用方法)
-    * [打开 Colab 笔记本](#打开-colab-笔记本)
-    * [环境配置](#环境配置)
-    * [准备数据集](#准备数据集)
-    * [训练模型](#训练模型)
-    * [进行推理 (语音转换)](#进行推理-语音转换)
-    * [下载结果](#下载结果)
-5.  [重要提示](#重要提示)
-6.  [问题排查](#问题排查)
-7.  [致谢](#致谢)
-8.  [许可证](#许可证)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/blob/main/RVC_For_Colab.ipynb)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Upstream](https://img.shields.io/badge/upstream-RVC--Project-black?logo=github)](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
 
-## 项目概览
+</div>
 
-基于检索的语音转换 (RVC) 是一种深度学习技术，它可以将一段音频中的语音转换为另一个目标语音，同时保留原始内容和韵律。此 Colab 笔记本简化了整个过程，提供一个预配置的运行环境、所有必要的依赖项以及结构化的工作流程。**本Colab特别适配了Google Colab最新的Python 3.11环境，并修复了原项目的一些bug，提升了兼容性和稳定性。**
+## Overview
 
-## 主要功能
+This repository is a fork of [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) with a ready-to-run Colab notebook. It is adapted to the **Python 3.11** runtime that Colab ships today and fixes several bugs in the original Colab workflow.
 
-* **易于使用:** 直接在 Google Colab 中运行，无需本地复杂配置。
-* **完全适配最新的 Colab Python 3.11 环境。** (May.17.2025)
-* **修复了原始项目中的部分 Bug，提升稳定性。**
-* **RVC 模型训练:** 使用您自己的音频数据集训练定制化的声音模型。
-* **语音推理:** 使用您训练好的模型或预训练模型，将一段语音转换为另一种声音。
-* **数据集管理:** 包含用于准备和上传音频数据集的工具和步骤。
-* **Google Drive 集成:** 方便地从您的 Google Drive 保存和加载模型及数据集。
+Features:
 
-## 环境要求
+- Runs entirely in Google Colab, nothing to set up locally.
+- Training and inference through the RVC WebUI, via a Gradio share link or an ngrok tunnel.
+- A command-line training path for when Colab refuses to run the WebUI on the free tier.
+- Back up and restore models with Google Drive.
+- UVR5 vocal / accompaniment separation models included.
 
-* 一个 **Google 账号** (用于使用 Google Colab 和 Google Drive)。
-* **音频数据集:**
-    * **训练新模型所需:** 您需要一个包含目标声音的清晰、高质量的音频录音数据集 (例如，至少10-30分钟的纯净人声，越多越好，背景噪音尽可能小)。
-    * 音频文件通常应为 `.wav` 格式。
-* 对 Google Colab 笔记本的基本操作有所了解 (例如如何运行单元格、管理文件等)。
+## Requirements
 
-## 使用方法
+- A Google account (for Colab and Google Drive).
+- A dataset of the target voice: clean recordings with as little background noise as possible. 10–30 minutes of speech or singing is a good start; more helps. `.wav` is recommended.
 
-### 打开 Colab 笔记本
+## Quick start
 
-1.  点击上方的 [![在 Colab 中打开](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&color=525252)](https://colab.research.google.com/github/yushentang/RVC-Retrieval-based-Voice-Conversion-Colab/blob/main/RVC_For_Colab.ipynb) ，在 Google Colab 中直接打开笔记本。
-2.  强烈建议您将笔记本副本保存到自己的 Google Drive (`文件 > 在云端硬盘中保存副本`)，以便保存您的更改和输出。
+1. Click the **Open in Colab** badge above, then `File > Save a copy in Drive` so your changes are kept.
+2. Select a GPU runtime: `Runtime > Change runtime type > T4 GPU`.
+3. Run the cells under **Setup** in order:
+   1. Clone the repository
+   2. Install dependencies
+   3. Download pretrained models (into `assets/pretrained_v2`, `assets/uvr5_weights`, `assets/hubert`, `assets/rmvpe`)
+   4. Mount Google Drive
+   5. Unzip your dataset to `/content/dataset`. Put the audio files at the top level of the zip.
+4. Pick one of the two options below.
 
-### 环境配置
+### Option 1: WebUI
 
-* 笔记本开头的单元格通常会执行以下操作：
-    * 连接到 GPU 运行时 (请确保已启用：`代码执行程序 > 更改运行时类型 > 硬件加速器 > GPU`)。
-    * 克隆 RVC 仓库。
-    * 安装必要的 Python 包和依赖项 (已针对 Python 3.11 环境优化)。
-* 按顺序运行这些单元格，可以点击每个单元格旁边的“播放”按钮，或使用 `Shift + Enter` 快捷键。
+- **Plan A** starts the WebUI with a Gradio share link (`*.gradio.live`). Open the link printed in the output.
+- **Plan B** exposes the WebUI through ngrok. Fill in your authtoken from <https://dashboard.ngrok.com> first.
 
-### 准备数据集
+In the WebUI's training tab, set the training folder to `/content/dataset`, then run the steps in order (or click "One-click training"). Trained models are written to `assets/weights`, indexes to `logs/<model name>`.
 
-* 笔记本会指导您如何上传数据集。通常包括：
-    * 将您的音频数据（例如，包含 `.wav` 文件的文件夹）创建一个 zip 压缩文件。
-    * 将 zip 文件上传到您的 Google Drive 或直接上传到 Colab 环境。
-    * 在笔记本中指定数据集的路径。
-* 遵循数据集预处理的说明，音频切分，音高特征处理等。
+### Option 2: command-line training
 
+Colab's free tier may block the WebUI. In that case, use the cells under **Option 2**:
 
+| Cell | What it does |
+| --- | --- |
+| Preprocess audio | Slices and resamples the dataset into `logs/<model>` |
+| Extract pitch and features | Pitch (`rmvpe_gpu` recommended) and HuBERT features |
+| Train the model | Writes the filelist / config, then trains from the v2 pretrained models |
+| Train the feature index | Builds the faiss index used at inference time |
 
-### 训练模型
+Keep the model name, sample rate and version the same in every cell.
 
-1.  **配置参数:**（手动）当Colab禁止使用Web代码时考虑使用
-    * Set the project name or model name.
-    * 指定您准备好的数据集的路径。
-    * 调整训练参数，如 `epoch` (训练轮数)、`batch_size` (批处理大小)、`sample_rate` (采样率)、`f0method` (基频提取算法，例如 `pm`, `harvest`, `crepe`, `rmvpe`)。
-    * 选择是从头开始训练还是微调一个预训练模型。
-2.  **开始训练:** 运行训练相关的单元格。此过程可能需要较长时间，具体取决于数据集大小和 `epoch` 数量。
-3.  **监控过程:** 监控训练进度。笔记本可能会输出日志、损失值，并定期保存模型检查点。
-    * 模型检查点 (例如 `.pth` 文件) 和索引文件 (例如 `.index` 文件) 通常会保存到指定目录，一般在您的 Google Drive 中。
+### Backup and restore
 
-### 进行推理 (语音转换)
+- **Back up** copies `G_*.pth` / `D_*.pth`, `config.json`, the index and the exported model in `assets/weights` to `MyDrive/RVC_backup/<model>`.
+- **Restore** copies them back so you can resume training or run inference. Backups made by the old version of the notebook stored files in the root of MyDrive with the G/D names swapped. Tick `LEGACY_BACKUP` to restore those.
+- If you trained with "only save latest", the checkpoint epoch is `2333333`.
 
-1.  **加载模型:**
-    * 指定您训练好的模型文件 (`.pth` 文件) 及其对应的索引文件 (`.index` 文件，如果使用的话) 的路径。
-    * 如果使用预训练模型，请确保已下载并可访问。
-2.  **输入音频:**
-    * 上传您想要转换的音频文件 (源音频)。
-    * 指定此输入音频文件的路径。
-3.  **转换设置:**
-    * 调整推理参数，如音高变换 (`transpose`)、索引率 (`index_rate`，用于特征检索) 以及与训练时不同的 f0 提取方法等。
-4.  **运行推理:** 执行推理单元格。输出将是经过语音转换的音频文件。
+## Tips
 
-### 下载结果
+- **Colab limits:** free GPU time is limited and sessions may disconnect during long training runs. Back up to Drive regularly.
+- **Temporary storage:** everything under `/content` is deleted when the runtime disconnects. Keep datasets and models in Drive.
+- **Dataset quality** matters most. Use clean recordings without reverb, accompaniment or noise. The UVR5 tab can separate vocals first.
+- **Tuning:** try more epochs, a different pitch extraction method (`rmvpe` usually works best), or adjust `index_rate` at inference time.
 
-* **转换后的音频:** 笔记本会提供下载生成的音频文件的方法，通常是将其保存到 Colab 的临时存储或直接保存到您的 Google Drive。
-* **训练好的模型:** 确保您的模型文件 (`.pth`, `.index`) 已保存到 Google Drive 以备将来使用，或将其下载到您的本地计算机。
+## Troubleshooting
 
-## 重要提示
+- **"GPU not available" / disconnected:** check that a GPU runtime is selected. You may have hit Colab's usage limit, so try again later or upgrade.
+- **Dependency install errors:** this notebook targets Python 3.11. Restart the runtime (`Runtime > Restart session`) and run the install cell again.
+- **"Pretrained model not exist":** run the download cell. The models must live under `assets/`.
+- **File not found:** check the paths you filled in, especially the dataset zip and the backup folder on Drive.
 
-* **Colab GPU 限制:** Google Colab 免费提供 GPU 资源，但有使用时长限制以及Web代码的限制使用。长时间的训练任务可能会被中断。Colab Pro/Pro+ 提供更稳定和更长的运行时与Web运行的权限。
-* **数据存储:** 直接上传到 Colab 环境的文件是临时的，当运行时断开连接时将被删除。务必将重要数据 (数据集、训练好的模型、结果) 保存到您的 Google Drive。
-* **数据集质量:** 您训练的声音模型的质量在很大程度上取决于训练音频数据的质量和数量。请使用清晰、无噪音的录音。
-* **参数调优:** 实现高质量的语音转换通常需要尝试不同的训练参数、f0 提取方法和数据集大小。
-* **合乎道德的使用:** 请注意声音克隆技术的伦理影响。未经他人明确同意，请勿将其用于创建误导性内容或冒充他人。
+## Ethical use
 
-## 问题排查
+Do not use voice conversion to impersonate anyone, or to make misleading content, without their explicit consent. You are responsible for the audio you create and share.
 
-* **"GPU 不可用" 或 "已断开连接":**
-    * 确保您已选择 GPU 运行时 (`代码执行程序 > 更改运行时类型`)。
-    * 您可能已达到 Colab 的使用限制。请稍后再试或考虑升级到 Colab Pro/Pro+。
-* **依赖安装过程中出错 (尤其是在非 Python 3.11 环境):**
-    * **确保您的 Colab 运行时为 Python 3.11。** 此笔记本针对该版本进行了优化。
-    * 重启运行时 (`代码执行程序 > 重新启动代码执行程序`)，然后再次尝试运行安装单元格。
-    * 查看错误消息以了解具体的库冲突信息。
-* **输出音频质量不佳:**
-    * 改进您的训练数据集 (更多数据、更纯净的音频)。
-    * 尝试不同的 音高特征 提取方法 (例如，`rmvpe`  通常效果较好)。
-    * 增加训练的 `epoch` 数量。
-    * 调整推理时的 `index_rate` (索引率)。
-* **文件未找到错误:**
-    * 仔细检查您在笔记本中指定的文件路径。确保它们正确指向您在 Google Drive 或 Colab 环境中的文件。
+## Contributors
 
-## 致谢
+Maintainer: [@juksentang](https://github.com/juksentang)
 
-* 本项目 Colab 笔记本的实现主要基于 `RVC-Project/Retrieval-based-Voice-Conversion-WebUI` 项目。
-* 感谢所有 RVC 社区的开发者和研究人员。
+This project builds on the work of everyone who contributed to [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI). The commit history of the upstream project is kept in this repository.
 
-## 许可证
+<a href="https://github.com/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=juksentang/RVC-Retrieval-based-Voice-Conversion-Colab" alt="Contributors" />
+</a>
 
-请参阅核心原始项目 `RVC-Project/Retrieval-based-Voice-Conversion-WebUI` 仓库中的许可证信息。
+Upstream contributors: <https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/graphs/contributors>
 
----
+Issues and pull requests are welcome.
+
+## Acknowledgements
+
+- [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
+- [ContentVec](https://github.com/auspicious3000/contentvec), [VITS](https://github.com/jaywalnut310/vits), [HiFi-GAN](https://github.com/jik876/hifi-gan), [RMVPE](https://github.com/Dream-High/RMVPE), [Ultimate Vocal Remover](https://github.com/Anjok07/ultimatevocalremovergui), [audio-slicer](https://github.com/openvpi/audio-slicer), [Gradio](https://github.com/gradio-app/gradio)
+
+## License
+
+[MIT](./LICENSE), same as the upstream project. See [MIT协议暨相关引用库协议](./MIT协议暨相关引用库协议) for the terms of use and the licenses of the bundled libraries.
