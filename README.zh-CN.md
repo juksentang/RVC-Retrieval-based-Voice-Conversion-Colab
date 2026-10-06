@@ -7,19 +7,21 @@
 在 Google Colab 上运行官方 [RVC WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)，训练自己的声音模型并进行变声，无需本地 GPU。
 
 [![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/blob/main/RVC_For_Colab.ipynb)
-[![RVC](https://img.shields.io/badge/RVC-2.3.260718-black?logo=github)](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/releases/tag/2.3.260718)
+[![RVC](https://img.shields.io/badge/RVC-2.3%20(81eed5e)-black?logo=github)](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/tree/81eed5e8f68b6bed1789f682fe78cdd324495afc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 </div>
 
 ## 项目简介
 
-本仓库只包含一个 Colab 笔记本 [`RVC_For_Colab.ipynb`](./RVC_For_Colab.ipynb)。它会克隆官方 [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) 的固定 release（当前为 **2.3.260718**），在 Colab 上配置好环境并运行。
+本仓库只包含一个 Colab 笔记本 [`RVC_For_Colab.ipynb`](./RVC_For_Colab.ipynb)。它会克隆官方 [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) 的固定提交，在 Colab 上配置好环境并运行。
+
+默认使用上游 2026-08-04 的 main（[`81eed5e`](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/commit/81eed5e8f68b6bed1789f682fe78cdd324495afc)）。`2.3.260718` 这个 git tag 打在 2026-07-20，早于 release 说明中列出的部分更新（例如人声分离从 UVR5 换成 PyMSS）。固定在之后的提交可以拿到全部更新，另外还包含多说话人训练。
 
 笔记本会：
 
 - 把 Colab 自带的 Torch 换成上游要求的版本（2.7.1，CUDA 12.8），并改用 PyPI 安装依赖，不走上游 requirements 中写死的国内镜像
-- 按上游要求的目录结构下载 HuBERT、RMVPE、底模和 UVR5 模型
+- 按上游要求的目录结构下载 HuBERT、RMVPE、底模，以及可选的 PyMSS 模型
 - 通过 Gradio 公网链接或 ngrok 隧道启动 WebUI
 - 在 Colab 禁止运行 WebUI 时，提供命令行训练单元格
 - 借助谷歌云盘备份和恢复模型
@@ -38,7 +40,7 @@
 3. 按顺序运行 **准备环境** 中的单元格：
    1. 克隆 RVC 官方仓库，`RVC_REF` 指定上游的 tag 或分支
    2. 安装依赖，需要几分钟
-   3. 下载模型：v2 底模必定下载，v1 底模和 UVR5 可选
+   3. 下载模型：v2 底模（40k / 48k）必定下载，v1 底模和 PyMSS 人声分离模型（约 2 GB）可选
    4. 挂载谷歌云盘
    5. 将数据集解压到 `/content/dataset`，zip 内直接放音频文件即可
 4. 从下面两种方式中任选一种。
@@ -63,6 +65,8 @@
 
 所有单元格中的模型名、采样率和版本需保持一致。
 
+RVC 2.3 移除了一些旧选项：训练只支持 40k 和 48k，训练用的音高提取只支持 `rmvpe` 和 `pm`（harvest、dio、crepe 已移除），推理时额外支持 `fcpe`。
+
 ### 备份与恢复
 
 - **备份** 会把 `G_*.pth` / `D_*.pth`、`config.json`、索引以及 `assets/weights` 中导出的模型复制到 `MyDrive/RVC_backup/<模型名>`。
@@ -72,14 +76,14 @@
 
 ## 升级到更新的 RVC 版本
 
-把第一个单元格中的 `RVC_REF` 改为更新的 [上游 tag](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/tags) 或 `main`。笔记本只针对默认值测试过，如果新版本无法运行，欢迎提 Issue。
+把第一个单元格中的 `RVC_REF` 改为上游的 tag、分支（如 `main`）或完整的提交 SHA。笔记本只针对默认值适配过，如果新版本无法运行，欢迎提 Issue。
 
 ## 注意事项
 
 - **Colab 限制：** 免费 GPU 有使用时长限制，长时间训练可能被中断，请定期备份到云盘。
 - **临时存储：** `/content` 下的文件会在运行时断开后被删除，数据集和模型请保存在云盘中。
-- **数据集质量** 对效果影响最大。请使用无混响、无伴奏、无噪音的干净录音，可以先用 UVR5 分离人声。
-- **调参：** 可以尝试增加 epoch，或在推理时调整 `index_rate`。
+- **数据集质量** 对效果影响最大。请使用无混响、无伴奏、无噪音的干净录音，可以先用人声分离页（PyMSS）去除伴奏和混响。
+- **调参：** 可以尝试增加 epoch、推理时换一种音高算法（`rmvpe` 或 `fcpe`），或调整 `index_rate`。
 
 ## 问题排查
 

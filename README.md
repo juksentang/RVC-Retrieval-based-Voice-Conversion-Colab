@@ -7,19 +7,21 @@
 Train your own voice model and convert voices with the official [RVC WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) on Google Colab, no local GPU needed.
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/blob/main/RVC_For_Colab.ipynb)
-[![RVC](https://img.shields.io/badge/RVC-2.3.260718-black?logo=github)](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/releases/tag/2.3.260718)
+[![RVC](https://img.shields.io/badge/RVC-2.3%20(81eed5e)-black?logo=github)](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/tree/81eed5e8f68b6bed1789f682fe78cdd324495afc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 </div>
 
 ## Overview
 
-This repository holds a single Colab notebook, [`RVC_For_Colab.ipynb`](./RVC_For_Colab.ipynb). It clones the official [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) at a pinned release (currently **2.3.260718**), sets up the environment on Colab, and runs it.
+This repository holds a single Colab notebook, [`RVC_For_Colab.ipynb`](./RVC_For_Colab.ipynb). It clones the official [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) at a pinned commit, sets up the environment on Colab, and runs it.
+
+The default is upstream main as of 2026-08-04 ([`81eed5e`](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/commit/81eed5e8f68b6bed1789f682fe78cdd324495afc)). The `2.3.260718` git tag was created on 2026-07-20, before several changes the release notes list, such as switching vocal separation from UVR5 to PyMSS. Pinning the later commit gets all of them, plus multi-speaker training.
 
 The notebook:
 
 - installs the Torch version upstream requires (2.7.1, CUDA 12.8) in place of the one Colab ships, and installs the dependencies from PyPI instead of the mirror pinned in upstream's requirements file
-- downloads the HuBERT, RMVPE, pretrained and UVR5 models into the layout upstream expects
+- downloads the HuBERT, RMVPE, pretrained and (optionally) PyMSS models into the layout upstream expects
 - starts the WebUI through a Gradio share link or an ngrok tunnel
 - offers command-line training cells for when Colab refuses to run the WebUI
 - backs up and restores models with Google Drive
@@ -38,7 +40,7 @@ The notebook:
 3. Run the cells under **Setup** in order:
    1. Clone the official RVC repository. `RVC_REF` picks the upstream tag or branch.
    2. Install dependencies. This takes a few minutes.
-   3. Download models. v2 pretrained models are always downloaded; v1 and UVR5 are optional.
+   3. Download models. v2 pretrained models (40k / 48k) are always downloaded; v1 and the PyMSS vocal separation models (about 2 GB) are optional.
    4. Mount Google Drive.
    5. Unzip your dataset to `/content/dataset`. Put the audio files at the top level of the zip.
 4. Pick one of the two options below.
@@ -63,6 +65,8 @@ Colab's free tier may block the WebUI. In that case, use the cells under **Optio
 
 Keep the model name, sample rate and version the same in every cell.
 
+RVC 2.3 removed several older options. Training supports 40k and 48k only, and pitch extraction for training supports `rmvpe` and `pm` only (harvest, dio and crepe are gone). Inference additionally supports `fcpe`.
+
 ### Backup and restore
 
 - **Back up** copies `G_*.pth` / `D_*.pth`, `config.json`, the index and the exported model in `assets/weights` to `MyDrive/RVC_backup/<model>`.
@@ -72,14 +76,14 @@ Keep the model name, sample rate and version the same in every cell.
 
 ## Updating to a newer RVC release
 
-Set `RVC_REF` in the first cell to a newer [upstream tag](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/tags), or to `main`. The notebook is tested with the default value only. If a newer release breaks it, please open an issue.
+Set `RVC_REF` in the first cell to an upstream tag, a branch such as `main`, or a full commit SHA. The notebook is written for the default value only. If a newer release breaks it, please open an issue.
 
 ## Tips
 
 - **Colab limits:** free GPU time is limited and sessions may disconnect during long training runs. Back up to Drive regularly.
 - **Temporary storage:** everything under `/content` is deleted when the runtime disconnects. Keep datasets and models in Drive.
-- **Dataset quality** matters most. Use clean recordings without reverb, accompaniment or noise. The UVR5 tab can separate vocals first.
-- **Tuning:** try more epochs, or adjust `index_rate` at inference time.
+- **Dataset quality** matters most. Use clean recordings without reverb, accompaniment or noise. The vocal separation tab (PyMSS) can remove accompaniment and reverb first.
+- **Tuning:** try more epochs, a different pitch method at inference time (`rmvpe` or `fcpe`), or adjust `index_rate`.
 
 ## Troubleshooting
 
