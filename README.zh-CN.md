@@ -26,7 +26,15 @@
 - 在 Colab 禁止运行 WebUI 时，提供命令行训练单元格
 - 借助谷歌云盘备份和恢复模型
 
-> 2026 年 10 月之前，本仓库是一个包含 RVC 2.2 代码副本的 fork。该版本保存在 [`legacy-2.2`](https://github.com/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/tree/legacy-2.2) tag 中。
+### 为什么不再 fork RVC 官方仓库
+
+2026 年 10 月之前，本仓库是一个 fork，自带一份为 Colab 修改过的 RVC 2.2 代码。现在改为直接运行官方代码，原因如下：
+
+- **fork 已经无法同步。** 上游在 2026 年 7 月从零重建了 `main`，新历史和旧历史没有任何共同提交。
+- **原来的补丁不再需要。** 本仓库原来的改动是适配 Python 3.11，并修复 fairseq、matplotlib、Gradio 的兼容问题。RVC 2.3 已经自行解决了这些问题，并官方支持 Linux 和 Python 3.12。
+- **用户拿到的就是官方代码。** 升级只需修改 `RVC_REF`。笔记本只负责配置环境，不会修改 RVC 的代码。
+
+本仓库只维护 Colab 笔记本，RVC 本身的 bug 请提交到 [上游](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/issues)。旧代码保存在 [`legacy-2.2`](https://github.com/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/tree/legacy-2.2) tag 中。
 
 ## 环境要求
 
@@ -38,7 +46,7 @@
 1. 点击上方 **Open in Colab** 徽章，然后 `文件 > 在云端硬盘中保存一份副本`，以便保留修改。
 2. 选择 GPU 运行时：`代码执行程序 > 更改运行时类型 > T4 GPU`。
 3. 按顺序运行 **准备环境** 中的单元格：
-   1. 克隆 RVC 官方仓库，`RVC_REF` 指定上游的 tag 或分支
+   1. 克隆 RVC 官方仓库，`RVC_REF` 指定上游的 tag、分支或提交
    2. 安装依赖，需要几分钟
    3. 下载模型：v2 底模（40k / 48k）必定下载，v1 底模和 PyMSS 人声分离模型（约 2 GB）可选
    4. 挂载谷歌云盘
@@ -100,6 +108,8 @@ RVC 2.3 移除了一些旧选项：训练只支持 40k 和 48k，训练用的音
 ## 贡献者
 
 笔记本维护者：[@juksentang](https://github.com/juksentang)
+
+本仓库保留了作为 fork 时的提交历史，所以下方列表中也包括本仓库以前所含代码的 RVC 作者。
 
 <a href="https://github.com/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=juksentang/RVC-Retrieval-based-Voice-Conversion-Colab" alt="Contributors" />

@@ -26,7 +26,15 @@ The notebook:
 - offers command-line training cells for when Colab refuses to run the WebUI
 - backs up and restores models with Google Drive
 
-> Before 2026-10, this repository was a fork that carried a copy of the RVC 2.2 code. That version is kept as the [`legacy-2.2`](https://github.com/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/tree/legacy-2.2) tag.
+### Why this is no longer a fork of RVC
+
+Until 2026-10, this repository was a fork that carried its own copy of the RVC 2.2 code, patched to run on Colab. It now runs the official code directly, because:
+
+- **The fork can no longer sync.** In 2026-07 upstream rebuilt `main` from scratch, so the new history shares no commits with the old one.
+- **The patches are no longer needed.** This fork adapted RVC to Python 3.11 and fixed compatibility issues with fairseq, matplotlib and Gradio. RVC 2.3 fixes these itself and officially supports Linux and Python 3.12.
+- **Users get the official code.** Upgrading only means changing `RVC_REF`. The notebook sets up the environment but never modifies RVC's code.
+
+This repository only maintains the Colab notebook. Please report bugs in RVC itself [upstream](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/issues). The old code is kept as the [`legacy-2.2`](https://github.com/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/tree/legacy-2.2) tag.
 
 ## Requirements
 
@@ -38,7 +46,7 @@ The notebook:
 1. Click the **Open in Colab** badge above, then `File > Save a copy in Drive` so your changes are kept.
 2. Select a GPU runtime: `Runtime > Change runtime type > T4 GPU`.
 3. Run the cells under **Setup** in order:
-   1. Clone the official RVC repository. `RVC_REF` picks the upstream tag or branch.
+   1. Clone the official RVC repository. `RVC_REF` picks the upstream tag, branch or commit.
    2. Install dependencies. This takes a few minutes.
    3. Download models. v2 pretrained models (40k / 48k) are always downloaded; v1 and the PyMSS vocal separation models (about 2 GB) are optional.
    4. Mount Google Drive.
@@ -100,6 +108,8 @@ Do not use voice conversion to impersonate anyone, or to make misleading content
 ## Contributors
 
 Notebook maintainer: [@juksentang](https://github.com/juksentang)
+
+This repository keeps the commit history from when it was a fork, so the list below also includes the RVC authors whose code it used to carry.
 
 <a href="https://github.com/juksentang/RVC-Retrieval-based-Voice-Conversion-Colab/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=juksentang/RVC-Retrieval-based-Voice-Conversion-Colab" alt="Contributors" />
