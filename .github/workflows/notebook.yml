@@ -1,0 +1,26 @@
+name: Check notebook
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - run: pip install ipython
+    - name: Parse every code cell
+      run: |
+        python - <<'PY'
+        import ast, json
+        from IPython.core.inputtransformer2 import TransformerManager
+        nb = json.load(open("RVC_For_Colab.ipynb", encoding="utf-8"))
+        tm = TransformerManager()
+        for i, cell in enumerate(nb["cells"]):
+            if cell["cell_type"] == "code":
+                ast.parse(tm.transform_cell("".join(cell["source"])), f"cell {i}")
+        print(len(nb["cells"]), "cells OK")
+        PY
